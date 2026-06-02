@@ -78,7 +78,18 @@ init()
 	level thread watch_round_count();
     // Single player connect handler for everything
     level thread onPlayerConnect();
+    level thread command_thread();
+    level thread seamless_restart_monitor();
 }
+
+seamless_restart_monitor()
+{
+    level endon("end_game_fast_restart");
+    level waittill("end_game");
+    wait 12; // Give players 12 seconds to see the scoreboard
+    map_restart(false);
+}
+
 
 // ============================================================================
 // PLAYER CONNECTION & SPAWN - Single unified handler
@@ -1239,6 +1250,10 @@ monitor_doors()
     // Wait for the game to actually place the doors
     level waittill("start_zombie_round_logic");
 
+    // Give the engine's door_think time to populate self.doors and finalize zombie_cost
+    // on all triggers before we capture original values (fixes Origins timing race)
+    wait 0.5;
+
     zombie_doors = getentarray("zombie_door", "targetname");
     zombie_debris = getentarray("zombie_debris", "targetname");
 
@@ -1261,6 +1276,24 @@ monitor_doors()
                     d.og_origin = d.origin;
                 if ( !isdefined( d.og_angles ) )
                     d.og_angles = d.angles;
+            }
+        }
+        else if ( isdefined( door.target ) )
+        {
+            // Fallback: engine hasn't populated door.doors yet, look up brushes directly
+            // and populate door.doors so custom_set_door_state can find them later
+            brushes = getentarray( door.target, "targetname" );
+            if ( isdefined( brushes ) && brushes.size > 0 )
+            {
+                door.doors = [];
+                for ( j = 0; j < brushes.size; j++ )
+                {
+                    if ( !isdefined( brushes[j].og_origin ) )
+                        brushes[j].og_origin = brushes[j].origin;
+                    if ( !isdefined( brushes[j].og_angles ) )
+                        brushes[j].og_angles = brushes[j].angles;
+                    door.doors[door.doors.size] = brushes[j];
+                }
             }
         }
 
@@ -1662,10 +1695,7 @@ watch_shared_door_use_press( door )
             door custom_set_door_state( true );
             return;
         }
-        else
-        {
-            player iprintln( "^1Not enough points!" );
-        }
+        
     }
 }
 
@@ -2016,6 +2046,8 @@ custom_set_door_state( open )
         for ( i = 0; i < self.doors.size; i++ )
         {
             brush = self.doors[i];
+            if ( !isdefined( brush ) )
+                continue;
             brush.door_moving = undefined;
 
             time = 1.0;
@@ -2076,6 +2108,9 @@ custom_set_door_state( open )
                 }
                 else // close
                 {
+                    // Ensure brush is visible (engine may have hide()'d it when opening)
+                    brush show();
+
                     if ( isdefined( brush.script_string ) && brush.script_string == "rotate" )
                     {
                         if ( isdefined( brush.og_angles ) )
@@ -2087,6 +2122,58 @@ custom_set_door_state( open )
                             brush thread [[ level.blocker_anim_func ]]( brush.script_animname );
                     }
                     else // "move" or "slide_apart"
+                    {
+                        if ( isdefined( brush.og_origin ) )
+                            brush moveto( brush.og_origin, time, time * 0.25, time * 0.25 );
+                    }
+
+                    brush thread make_solid_after_move( time, false );
+                }
+            }
+        }
+    }
+    else if ( !open && isdefined( self.target ) )
+    {
+        // Fallback: self.doors was never populated (e.g. Origins), look up brushes directly
+        brushes = getentarray( self.target, "targetname" );
+        if ( isdefined( brushes ) )
+        {
+            play_sound_at_pos( "door_slide_open", self.origin );
+
+            for ( i = 0; i < brushes.size; i++ )
+            {
+                brush = brushes[i];
+                if ( !isdefined( brush ) )
+                    continue;
+
+                time = 1.0;
+                if ( isdefined( brush.script_transition_time ) )
+                    time = brush.script_transition_time;
+
+                if ( isdefined( brush.script_noteworthy ) && brush.script_noteworthy == "clip" || isdefined( brush.script_string ) && brush.script_string == "clip" )
+                {
+                    brush disconnectpaths();
+                    brush solid();
+                }
+                else
+                {
+                    brush show();
+                    brush notsolid();
+
+                    if ( isdefined( brush.script_sound ) )
+                        playsoundatposition( brush.script_sound, brush.origin );
+
+                    if ( isdefined( brush.script_string ) && brush.script_string == "rotate" )
+                    {
+                        if ( isdefined( brush.og_angles ) )
+                            brush rotateto( brush.og_angles, time, 0, 0 );
+                    }
+                    else if ( isdefined( brush.script_string ) && brush.script_string == "anim" )
+                    {
+                        if ( isdefined( level.blocker_anim_func ) && isdefined( brush.script_animname ) )
+                            brush thread [[ level.blocker_anim_func ]]( brush.script_animname );
+                    }
+                    else
                     {
                         if ( isdefined( brush.og_origin ) )
                             brush moveto( brush.og_origin, time, time * 0.25, time * 0.25 );
@@ -2597,7 +2684,7 @@ custom_boxstub_update_prompt( player )
             self.hint_string = "Press ^3F^7 Weapon, ^3Melee^7 Share, ^3ADS+F^7 Close";
         }
     }
-    else if(getdvar("mapname") == "zm_tomb" && isDefined(level.zone_capture.zones) && !level.zone_capture.zones[self.stub.zone] ent_flag( "player_controlled" )) 
+    else if(getdvar("mapname") == "zm_tomb" && isDefined(level.zone_capture.zones) && isDefined(self.stub.zone) && isDefined(level.zone_capture.zones[self.stub.zone]) && !level.zone_capture.zones[self.stub.zone] ent_flag( "player_controlled" )) 
     {
         self.stub.hint_string = &"ZM_TOMB_ZC";
         return 0;

@@ -101,6 +101,17 @@ init()
     level thread bank_tomb_setup();
     level thread remove_weapon_limits();
     replaceFunc( maps\mp\zm_tomb_utility::player_slow_movement_speed_monitor, ::custom_player_slow_movement_speed_monitor );
+
+    // Prevent Origins from deleting door brushes after they open — hide instead of delete
+    // so our Sprint+Melee close system can show() and moveto() them back
+    replaceFunc( maps\mp\zm_tomb_utility::bunker_door_clean_up, ::custom_bunker_door_clean_up );
+}
+
+custom_bunker_door_clean_up()
+{
+    self waittill( "movedone" );
+    self hide();     // Hide instead of delete — keeps the entity alive for closing
+    self notsolid();
 }
 
 custom_swap_weapon( str_weapon, e_player )
