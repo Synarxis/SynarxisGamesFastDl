@@ -1363,6 +1363,24 @@ watch_use_press()
         if(player.score >= self.real_cost)
         {
             player.score -= self.real_cost;
+            self.real_cost = 0;
+
+            // Sync with sibling triggers
+            if ( isDefined( self.target ) )
+            {
+                doors = getentarray( "zombie_door", "targetname" );
+                debris = getentarray( "zombie_debris", "targetname" );
+                foreach ( other in doors )
+                {
+                    if ( isDefined( other.target ) && other.target == self.target )
+                        other.real_cost = 0;
+                }
+                foreach ( other in debris )
+                {
+                    if ( isDefined( other.target ) && other.target == self.target )
+                        other.real_cost = 0;
+                }
+            }
 
             // For debris: intercept the purchase entirely so the engine doesn't delete the triggers
             // IMPORTANT: Do NOT set zombie_cost = 0 here! The engine's debris_think also receives
@@ -1554,6 +1572,33 @@ monitor_sprint_melee()
                 {
                     self.last_door_close_time = gettime();
 
+                    // Calculate how many points to refund
+                    refund_cost = 0;
+                    if ( isdefined( closest_door.original_cost ) )
+                    {
+                        // Use original cost or what was left after half buying
+                        refund_cost = closest_door.original_cost;
+                        if ( isdefined( closest_door.is_half_bought ) && closest_door.is_half_bought )
+                        {
+                            // If they only paid half
+                            refund_cost = int( closest_door.original_cost / 2 );
+                        }
+                        if ( isdefined( closest_door.real_cost ) )
+                        {
+                            refund_cost = closest_door.original_cost - closest_door.real_cost;
+                        }
+                    }
+                    else if ( isdefined( closest_door.zombie_cost ) && closest_door.zombie_cost > 0 && closest_door.zombie_cost < 999999 )
+                    {
+                        refund_cost = closest_door.zombie_cost;
+                    }
+
+                    if ( refund_cost > 0 )
+                    {
+                        self maps\mp\zombies\_zm_score::add_to_player_score( refund_cost );
+                        self playlocalsound( "zmb_point_earn_barrier" ); // Play a light feedback sound
+                    }
+
                     // ---- DEBRIS CLOSE PATH ----
                     if ( isdefined( closest_door._is_debris ) && closest_door._is_debris )
                     {
@@ -1685,6 +1730,24 @@ watch_shared_door_use_press( door )
         if ( player.score >= self.real_cost )
         {
             player.score -= self.real_cost;
+            self.real_cost = 0;
+
+            // Sync with sibling triggers
+            if ( isDefined( self.target ) )
+            {
+                doors = getentarray( "zombie_door", "targetname" );
+                debris = getentarray( "zombie_debris", "targetname" );
+                foreach ( other in doors )
+                {
+                    if ( isDefined( other.target ) && other.target == self.target )
+                        other.real_cost = 0;
+                }
+                foreach ( other in debris )
+                {
+                    if ( isDefined( other.target ) && other.target == self.target )
+                        other.real_cost = 0;
+                }
+            }
 
             // Play purchase confirmation and points-spent sounds
             play_sound_at_pos( "purchase", self.origin );
@@ -1954,6 +2017,25 @@ watch_debris_reopen()
         if ( isdefined( self.real_cost ) && player.score >= self.real_cost )
         {
             player.score -= self.real_cost;
+            self.real_cost = 0;
+
+            // Sync with sibling triggers
+            if ( isDefined( self.target ) )
+            {
+                doors = getentarray( "zombie_door", "targetname" );
+                debris = getentarray( "zombie_debris", "targetname" );
+                foreach ( other in doors )
+                {
+                    if ( isDefined( other.target ) && other.target == self.target )
+                        other.real_cost = 0;
+                }
+                foreach ( other in debris )
+                {
+                    if ( isDefined( other.target ) && other.target == self.target )
+                        other.real_cost = 0;
+                }
+            }
+
             self thread custom_open_debris( player );
             return;
         }
@@ -2623,6 +2705,9 @@ get_chest_pieces()
         self.zbarrier zbarrierpieceuseboxriselogic( 3 );
         self.zbarrier zbarrierpieceuseboxriselogic( 4 );
     }
+
+    old_stub = self.unitrigger_stub;
+
     self.unitrigger_stub = spawnstruct();
     self.unitrigger_stub.origin = self.origin + ( anglesToRight( self.angles ) * -22.5 );
     self.unitrigger_stub.angles = self.angles;
@@ -2631,6 +2716,17 @@ get_chest_pieces()
     self.unitrigger_stub.script_height = 50;
     self.unitrigger_stub.script_length = 45;
     self.unitrigger_stub.trigger_target = self;
+
+    // Origins generator lock sync
+    if ( isdefined( old_stub ) && isdefined( old_stub.zone ) )
+    {
+        self.unitrigger_stub.zone = old_stub.zone;
+    }
+    if ( isdefined( self.zone_capture_area ) )
+    {
+        self.unitrigger_stub.zone = self.zone_capture_area;
+    }
+
     unitrigger_force_per_player_triggers( self.unitrigger_stub, 1 );
     self.unitrigger_stub.prompt_and_visibility_func = ::boxtrigger_update_prompt;
     self.zbarrier.owner = self;
