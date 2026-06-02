@@ -1366,19 +1366,22 @@ watch_use_press()
             self.real_cost = 0;
 
             // Sync with sibling triggers
-            if ( isDefined( self.target ) )
+            doors = getentarray( "zombie_door", "targetname" );
+            debris = getentarray( "zombie_debris", "targetname" );
+            foreach ( other in doors )
             {
-                doors = getentarray( "zombie_door", "targetname" );
-                debris = getentarray( "zombie_debris", "targetname" );
-                foreach ( other in doors )
+                if ( other != self && ( (isDefined( self.target ) && isDefined( other.target ) && other.target == self.target) || (isDefined( self.script_flag ) && isDefined( other.script_flag ) && other.script_flag == self.script_flag) ) )
                 {
-                    if ( isDefined( other.target ) && other.target == self.target )
-                        other.real_cost = 0;
+                    other.real_cost = 0;
+                    other.zombie_cost = 0;
+                    other notify("trigger", player);
                 }
-                foreach ( other in debris )
+            }
+            foreach ( other in debris )
+            {
+                if ( other != self && ( (isDefined( self.target ) && isDefined( other.target ) && other.target == self.target) || (isDefined( self.script_flag ) && isDefined( other.script_flag ) && other.script_flag == self.script_flag) ) )
                 {
-                    if ( isDefined( other.target ) && other.target == self.target )
-                        other.real_cost = 0;
+                    other.real_cost = 0;
                 }
             }
 
@@ -1441,7 +1444,7 @@ watch_melee_pay()
 
                         foreach ( other in doors )
                         {
-                            if ( isDefined( other.target ) && other.target == trig.target && other != trig )
+                            if ( other != trig && ( (isDefined( trig.target ) && isDefined( other.target ) && other.target == trig.target) || (isDefined( trig.script_flag ) && isDefined( other.script_flag ) && other.script_flag == trig.script_flag) ) )
                             {
                                 other.real_cost = trig.real_cost;
                                 other.is_half_bought = true;
@@ -1450,7 +1453,7 @@ watch_melee_pay()
                         }
                         foreach ( other in debris )
                         {
-                            if ( isDefined( other.target ) && other.target == trig.target && other != trig )
+                            if ( other != trig && ( (isDefined( trig.target ) && isDefined( other.target ) && other.target == trig.target) || (isDefined( trig.script_flag ) && isDefined( other.script_flag ) && other.script_flag == trig.script_flag) ) )
                             {
                                 other.real_cost = trig.real_cost;
                                 other.is_half_bought = true;
@@ -1614,12 +1617,10 @@ monitor_sprint_melee()
                         else if ( isdefined( closest_door.zombie_cost ) )
                             cost = closest_door.zombie_cost;
 
-                        // Use custom open/close physics state to close the door (now plays sounds)
-                        closest_door custom_set_door_state( false );
-
                         // Check if it is a Mob of the Dead Afterlife Door
                         if ( isdefined( closest_door.script_noteworthy ) && closest_door.script_noteworthy == "afterlife_door" )
                         {
+                            closest_door custom_set_door_state( false );
                             closest_door notify( "door_closed" ); // Signal to any old monitors
 
                             s_struct = getstruct( closest_door.target, "targetname" );
@@ -1650,12 +1651,37 @@ monitor_sprint_melee()
                         else
                         {
                             // Handle standard map doors
-                            all_trigs = getentarray( closest_door.target, "target" );
-                            if ( isdefined( all_trigs ) )
+                            all_trigs = [];
+                            if ( isdefined( closest_door.target ) )
+                            {
+                                targets = getentarray( closest_door.target, "target" );
+                                if ( isdefined( targets ) )
+                                {
+                                    for( i=0; i<targets.size; i++ ) all_trigs[all_trigs.size] = targets[i];
+                                }
+                            }
+                            if ( isdefined( closest_door.script_flag ) )
+                            {
+                                doors = getentarray( "zombie_door", "targetname" );
+                                for( i=0; i<doors.size; i++ )
+                                {
+                                    if ( isdefined( doors[i].script_flag ) && doors[i].script_flag == closest_door.script_flag )
+                                    {
+                                        is_dup = false;
+                                        for( j=0; j<all_trigs.size; j++ ) { if( all_trigs[j] == doors[i] ) { is_dup = true; break; } }
+                                        if ( !is_dup ) all_trigs[all_trigs.size] = doors[i];
+                                    }
+                                }
+                            }
+
+                            if ( all_trigs.size > 0 )
                             {
                                 for ( i = 0; i < all_trigs.size; i++ )
                                 {
                                     trig = all_trigs[i];
+
+                                    // Physically close the door
+                                    trig custom_set_door_state( false );
 
                                     // Restore original origin in case trigger_off offset got stacked
                                     if ( isdefined( trig.original_origin ) )
@@ -1685,6 +1711,9 @@ monitor_sprint_melee()
                                     }
                                     else
                                     {
+                                        cost = 1000;
+                                        if ( isdefined( closest_door.original_cost ) ) cost = closest_door.original_cost;
+                                        else if ( isdefined( closest_door.zombie_cost ) ) cost = closest_door.zombie_cost;
                                         trig sethintstring( "Hold [{+activate}] to buy door [Cost: " + cost + "]" );
                                         trig thread monitor_manual_reopen( closest_door );
                                     }
@@ -1733,19 +1762,22 @@ watch_shared_door_use_press( door )
             self.real_cost = 0;
 
             // Sync with sibling triggers
-            if ( isDefined( self.target ) )
+            doors = getentarray( "zombie_door", "targetname" );
+            debris = getentarray( "zombie_debris", "targetname" );
+            foreach ( other in doors )
             {
-                doors = getentarray( "zombie_door", "targetname" );
-                debris = getentarray( "zombie_debris", "targetname" );
-                foreach ( other in doors )
+                if ( other != self && ( (isDefined( self.target ) && isDefined( other.target ) && other.target == self.target) || (isDefined( self.script_flag ) && isDefined( other.script_flag ) && other.script_flag == self.script_flag) ) )
                 {
-                    if ( isDefined( other.target ) && other.target == self.target )
-                        other.real_cost = 0;
+                    other.real_cost = 0;
+                    other.zombie_cost = 0;
+                    other notify("trigger", player);
                 }
-                foreach ( other in debris )
+            }
+            foreach ( other in debris )
+            {
+                if ( other != self && ( (isDefined( self.target ) && isDefined( other.target ) && other.target == self.target) || (isDefined( self.script_flag ) && isDefined( other.script_flag ) && other.script_flag == self.script_flag) ) )
                 {
-                    if ( isDefined( other.target ) && other.target == self.target )
-                        other.real_cost = 0;
+                    other.real_cost = 0;
                 }
             }
 
@@ -1783,27 +1815,52 @@ save_debris_siblings_and_pieces()
     // Always include self in the siblings list so it gets processed
     self._sibling_trigs[0] = self;
 
-    if ( !isdefined( self.target ) )
-        return;
-
-    pieces = getentarray( self.target, "targetname" );
-    if ( isdefined( pieces ) )
+    if ( isdefined( self.target ) )
     {
-        for ( i = 0; i < pieces.size; i++ )
+        pieces = getentarray( self.target, "targetname" );
+        if ( isdefined( pieces ) )
         {
-            pieces[i].og_origin = pieces[i].origin;
-            pieces[i].og_angles = pieces[i].angles;
-            self._saved_pieces[self._saved_pieces.size] = pieces[i];
+            for ( i = 0; i < pieces.size; i++ )
+            {
+                pieces[i].og_origin = pieces[i].origin;
+                pieces[i].og_angles = pieces[i].angles;
+                self._saved_pieces[self._saved_pieces.size] = pieces[i];
+            }
+        }
+
+        trigs = getentarray( self.target, "target" );
+        if ( isdefined( trigs ) )
+        {
+            for ( i = 0; i < trigs.size; i++ )
+            {
+                if ( trigs[i] != self )
+                    self._sibling_trigs[self._sibling_trigs.size] = trigs[i];
+            }
         }
     }
 
-    trigs = getentarray( self.target, "target" );
-    if ( isdefined( trigs ) )
+    if ( isdefined( self.script_flag ) )
     {
-        for ( i = 0; i < trigs.size; i++ )
+        doors = getentarray( "zombie_door", "targetname" );
+        debris = getentarray( "zombie_debris", "targetname" );
+        
+        for ( i = 0; i < doors.size; i++ )
         {
-            if ( trigs[i] != self )
-                self._sibling_trigs[self._sibling_trigs.size] = trigs[i];
+            if ( doors[i] != self && isdefined( doors[i].script_flag ) && doors[i].script_flag == self.script_flag )
+            {
+                is_dup = false;
+                for ( j = 0; j < self._sibling_trigs.size; j++ ) { if ( self._sibling_trigs[j] == doors[i] ) { is_dup = true; break; } }
+                if ( !is_dup ) self._sibling_trigs[self._sibling_trigs.size] = doors[i];
+            }
+        }
+        for ( i = 0; i < debris.size; i++ )
+        {
+            if ( debris[i] != self && isdefined( debris[i].script_flag ) && debris[i].script_flag == self.script_flag )
+            {
+                is_dup = false;
+                for ( j = 0; j < self._sibling_trigs.size; j++ ) { if ( self._sibling_trigs[j] == debris[i] ) { is_dup = true; break; } }
+                if ( !is_dup ) self._sibling_trigs[self._sibling_trigs.size] = debris[i];
+            }
         }
     }
 }
@@ -2020,20 +2077,17 @@ watch_debris_reopen()
             self.real_cost = 0;
 
             // Sync with sibling triggers
-            if ( isDefined( self.target ) )
+            doors = getentarray( "zombie_door", "targetname" );
+            debris = getentarray( "zombie_debris", "targetname" );
+            foreach ( other in doors )
             {
-                doors = getentarray( "zombie_door", "targetname" );
-                debris = getentarray( "zombie_debris", "targetname" );
-                foreach ( other in doors )
-                {
-                    if ( isDefined( other.target ) && other.target == self.target )
-                        other.real_cost = 0;
-                }
-                foreach ( other in debris )
-                {
-                    if ( isDefined( other.target ) && other.target == self.target )
-                        other.real_cost = 0;
-                }
+                if ( (isDefined( self.target ) && isDefined( other.target ) && other.target == self.target) || (isDefined( self.script_flag ) && isDefined( other.script_flag ) && other.script_flag == self.script_flag) )
+                    other.real_cost = 0;
+            }
+            foreach ( other in debris )
+            {
+                if ( (isDefined( self.target ) && isDefined( other.target ) && other.target == self.target) || (isDefined( self.script_flag ) && isDefined( other.script_flag ) && other.script_flag == self.script_flag) )
+                    other.real_cost = 0;
             }
 
             self thread custom_open_debris( player );
