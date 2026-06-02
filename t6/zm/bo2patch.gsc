@@ -78,7 +78,18 @@ init()
 	level thread watch_round_count();
     // Single player connect handler for everything
     level thread onPlayerConnect();
+    level thread command_thread();
+    level thread seamless_restart_monitor();
 }
+
+seamless_restart_monitor()
+{
+    level endon("end_game_fast_restart");
+    level waittill("end_game");
+    wait 12; // Give players 12 seconds to see the scoreboard
+    map_restart(false);
+}
+
 
 // ============================================================================
 // PLAYER CONNECTION & SPAWN - Single unified handler
@@ -1662,10 +1673,7 @@ watch_shared_door_use_press( door )
             door custom_set_door_state( true );
             return;
         }
-        else
-        {
-            player iprintln( "^1Not enough points!" );
-        }
+        
     }
 }
 
@@ -2597,7 +2605,7 @@ custom_boxstub_update_prompt( player )
             self.hint_string = "Press ^3F^7 Weapon, ^3Melee^7 Share, ^3ADS+F^7 Close";
         }
     }
-    else if(getdvar("mapname") == "zm_tomb" && isDefined(level.zone_capture.zones) && !level.zone_capture.zones[self.stub.zone] ent_flag( "player_controlled" )) 
+    else if(getdvar("mapname") == "zm_tomb" && isDefined(level.zone_capture.zones) && isDefined(self.stub.zone) && isDefined(level.zone_capture.zones[self.stub.zone]) && !level.zone_capture.zones[self.stub.zone] ent_flag( "player_controlled" )) 
     {
         self.stub.hint_string = &"ZM_TOMB_ZC";
         return 0;
