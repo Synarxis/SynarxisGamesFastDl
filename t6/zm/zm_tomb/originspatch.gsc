@@ -96,8 +96,7 @@ init()
     level.custom_zone_names["zone_chamber_8"] = "The Crazy Place Wind Chamber";
     level.custom_zone_names["zone_robot_head"] = "Robot's Head";
     replaceFunc( maps\mp\zm_tomb_dig::swap_weapon, ::custom_swap_weapon );
-    precachemodel( "p6_zm_tm_orb_fire" );
-    precachemodel( "p6_zm_tm_orb_ice" );
+    precachemodel( "zombie_z_money_icon" );
     level thread bank_tomb_setup();
     level thread remove_weapon_limits();
     replaceFunc( maps\mp\zm_tomb_utility::player_slow_movement_speed_monitor, ::custom_player_slow_movement_speed_monitor );
@@ -171,8 +170,8 @@ bank_tomb_setup()
     level.banking_map = "zm_transit";
 
     // Start monitors for Gen 2 (Deposit) and Gen 3 (Withdraw)
-    level thread generator_orb_monitor( "generator_mid_trench", "p6_zm_tm_orb_ice", ( 140, 3982, -207 ), ( 0, -48, 0 ) );
-    level thread generator_orb_monitor( "generator_tank_trench", "p6_zm_tm_orb_fire", ( 158, 3268, -169 ), ( 0, 128, 0 ) );
+    level thread generator_orb_monitor( "generator_mid_trench", "zombie_z_money_icon", ( 140, 3982, -207 ), ( 0, -48, 0 ) );
+    level thread generator_orb_monitor( "generator_tank_trench", "zombie_z_money_icon", ( 158, 3268, -169 ), ( 0, 128, 0 ) );
 
     deposit_spot = spawnstruct();
     deposit_spot.origin = ( 140, 3982, -170 );
@@ -230,40 +229,52 @@ generator_orb_monitor( zone_name, model_name, origin, angles )
 {
     level endon( "end_game" );
     
-    orb_ent = undefined;
+    // Spawn the z_money model permanently
+    spawn_pos = origin + ( 0, 0, 45 );
+    orb_ent = spawn( "script_model", spawn_pos );
+    orb_ent.angles = angles;
+    orb_ent setmodel( model_name );
+    
+    // Start animations
+    orb_ent thread float_orb();
+    orb_ent thread rotate_orb();
+    
+    last_powered_state = -1;
+    fx_ent = undefined;
     
     while ( true )
     {
         powered = is_generator_powered( zone_name );
         
-        if ( powered && !isdefined( orb_ent ) )
+        if ( powered != last_powered_state )
         {
-            // Spawn the orb floating slightly above ground (z + 45)
-            spawn_pos = origin + ( 0, 0, 45 );
-            orb_ent = spawn( "script_model", spawn_pos );
-            orb_ent.angles = angles;
-            orb_ent setmodel( model_name );
+            last_powered_state = powered;
             
-            // Start animations
-            orb_ent thread float_orb();
-            orb_ent thread rotate_orb();
-            
-            // Refresh unitriggers visibility
+            // Refresh unitriggers visibility so the hint text updates
             if ( isdefined( level.bank_deposit_stub ) )
                 level.bank_deposit_stub maps\mp\zombies\_zm_unitrigger::run_visibility_function_for_all_triggers();
             if ( isdefined( level.bank_withdraw_stub ) )
                 level.bank_withdraw_stub maps\mp\zombies\_zm_unitrigger::run_visibility_function_for_all_triggers();
-        }
-        else if ( !powered && isdefined( orb_ent ) )
-        {
-            orb_ent delete();
-            orb_ent = undefined;
-            
-            // Refresh unitriggers visibility
-            if ( isdefined( level.bank_deposit_stub ) )
-                level.bank_deposit_stub maps\mp\zombies\_zm_unitrigger::run_visibility_function_for_all_triggers();
-            if ( isdefined( level.bank_withdraw_stub ) )
-                level.bank_withdraw_stub maps\mp\zombies\_zm_unitrigger::run_visibility_function_for_all_triggers();
+                
+            // Handle glow FX
+            if ( powered )
+            {
+                if ( !isdefined( fx_ent ) )
+                {
+                    fx_ent = spawn( "script_model", orb_ent.origin );
+                    fx_ent setmodel( "tag_origin" );
+                    fx_ent linkto( orb_ent );
+                    playfxontag( level._effect["powerup_on"], fx_ent, "tag_origin" );
+                }
+            }
+            else
+            {
+                if ( isdefined( fx_ent ) )
+                {
+                    fx_ent delete();
+                    fx_ent = undefined;
+                }
+            }
         }
         
         wait 1.0;

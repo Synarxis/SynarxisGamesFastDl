@@ -1,0 +1,152 @@
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_transit\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_transit\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:12 say;5744116;0;Synarxis;.w all
+  0:31 ShutdownGame:
+  0:31 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_prison\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_prison\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:18 say;5744116;0;Synarxis;,w all
+  0:20 say;5744116;0;Synarxis;.w all
+  0:49 ShutdownGame:
+  0:49 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zstandard\g_randomSeed\0\gamename\PT6ZM\mapname\zm_nuked\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zstandard\g_randomSeed\0\gamename\PT6ZM\mapname\zm_nuked\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:15 say;5744116;0;Synarxis;,w all
+  0:16 say;5744116;0;Synarxis;.w all
+  0:30 ShutdownGame:
+  0:30 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\4\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\4\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:07 say;5744116;0;Synarxis;.w all
+  0:13 say;5744116;0;Synarxis;.d all
+  0:58 ShutdownGame:
+  0:58 ------------------------------------------------------------
+  0:58 ------------------------------------------------------------
+  0:58 InitGame: \com_maxclients\4\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:58 InitGame: \com_maxclients\4\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:58 J;5744116;0;Synarxis
+  1:36 ShutdownGame:
+  1:36 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:07 ShutdownGame:
+  0:07 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:48 ShutdownGame:
+  0:48 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:15 say;5744116;0;Synarxis;.w all
+  0:37 ShutdownGame:
+  0:37 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:07 say;5744116;0;Synarxis;.w all
+  0:09 say;5744116;0;Synarxis;.w all
+  1:16 ShutdownGame:
+  1:16 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:12 say;5744116;0;Synarxis;.w all
+  0:38 ShutdownGame:
+  0:38 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\8\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\8\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:09 say;5744116;0;Synarxis;.w all
+  0:33 ShutdownGame:
+  0:33 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:09 say;5744116;0;Synarxis;.w all
+  1:10 ShutdownGame:
+  1:10 ------------------------------------------------------------
+  1:10 ------------------------------------------------------------
+  1:10 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  1:10 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  1:11 J;5744116;0;Synarxis
+  1:20 say;5744116;0;Synarxis;.w all
+  2:01 ShutdownGame:
+  2:01 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:09 say;5744116;0;Synarxis;.w all
+  1:06 ShutdownGame:
+  1:06 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:30 ShutdownGame:
+  0:30 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:23 say;5744116;0;Synarxis;.w all
+  1:24 say;5744116;0;Synarxis;.d all
+  2:12 ShutdownGame:
+  2:12 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\8\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\8\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:30 say;5744116;0;Synarxis;.w all
+  1:15 say;5744116;0;Synarxis;.w all
+  1:18 say;5744116;0;Synarxis;.d all
+  1:23 ShutdownGame:
+  1:23 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_tomb\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:09 say;5744116;0;Synarxis;.w all
+  1:19 ShutdownGame:
+  1:19 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_prison\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_prison\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:11 say;5744116;0;Synarxis;.w 10000
+  0:17 say;5744116;0;Synarxis;.w 10000
+  0:59 ShutdownGame:
+  0:59 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_prison\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_prison\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  0:18 say;5744116;0;Synarxis;.w all
+  0:25 say;5744116;0;Synarxis;.d 230000
+  0:41 ShutdownGame:
+  0:41 ------------------------------------------------------------
+  0:00 ------------------------------------------------------------
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_prison\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1
+  0:00 InitGame: \com_maxclients\1\fs_game\mods/SynarxisGames\g_gametype\zclassic\g_randomSeed\0\gamename\PT6ZM\mapname\zm_prison\playlist_enabled\0\playlist_entry\0\protocol\2089\scr_team_fftype\1\shortversion\r5316\sv_allowAimAssist\1\sv_allowAnonymous\0\sv_clientFpsLimit\0\sv_disableClientConsole\0\sv_hostname\Private Match\sv_maxclients\4\sv_maxPing\0\sv_minPing\0\sv_privateClients\0\sv_privateClientsForClients\0\sv_pure\0\sv_voice\1\g_logTimeStampInSeconds\0
+  0:00 J;5744116;0;Synarxis
+  1:16 say;5744116;0;Synarxis;.w 10000
+  2:05 ShutdownGame:
+  2:05 ------------------------------------------------------------

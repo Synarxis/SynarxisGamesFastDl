@@ -1399,7 +1399,7 @@ watch_use_press()
         }
         else
         {
-            player iprintln("^1Not enough points!");
+            player thread custom_error_print("^1Not enough points!");
         }
     }
 }
@@ -1475,7 +1475,7 @@ watch_melee_pay()
                 }
                 else
                 {
-                    self iprintln("^1Not enough for half!^7");
+                    self thread custom_error_print("^1Not enough for half!^7");
                     while(self meleebuttonpressed()) wait 0.05;
                 }
             }
@@ -2041,7 +2041,7 @@ watch_debris_reopen()
         }
         else
         {
-            player iprintln( "^1Not enough points!" );
+            player thread custom_error_print( "^1Not enough points!" );
         }
     }
 }
@@ -3578,4 +3578,50 @@ get_zone_name()
     }
     
     return "";
+}
+
+custom_error_print( msg )
+{
+    self endon("disconnect");
+    self notify("custom_error_print");
+    self endon("custom_error_print");
+
+    if ( !IsDefined( self.custom_error_hud ) )
+    {
+        self.custom_error_hud = newClientHudElem(self);
+        self.custom_error_hud.alignx = "left";
+        self.custom_error_hud.aligny = "middle";
+        self.custom_error_hud.horzalign = "user_left";
+        self.custom_error_hud.vertalign = "user_bottom";
+        
+        // Sit below health bar (-104) and above default iprintln
+        y = -80; 
+        if ( level.script == "zm_buried" )
+            y -= 25;
+        else if ( level.script == "zm_tomb" )
+            y -= 35; // Put it at -115. The Origins health bar is at -164, and Action Slots are at the bottom.
+            
+        self.custom_error_hud.x = 5;
+        self.custom_error_hud.y = y;
+        
+        if (self issplitscreen())
+            self.custom_error_hud.y += 60;
+            
+        self.custom_error_hud.foreground = 1;
+        self.custom_error_hud.font = "default";
+        self.custom_error_hud.fontscale = 1.3;
+        self.custom_error_hud.alpha = 0;
+        self.custom_error_hud.hidewheninmenu = 1;
+    }
+
+    self.custom_error_hud.alpha = 1;
+    self.custom_error_hud settext( msg );
+
+    wait 2;
+
+    if ( IsDefined( self.custom_error_hud ) )
+        self.custom_error_hud fadeovertime( 0.5 );
+        
+    if ( IsDefined( self.custom_error_hud ) )
+        self.custom_error_hud.alpha = 0;
 }
