@@ -87,7 +87,7 @@ seamless_restart_monitor()
     level endon("end_game_fast_restart");
     level waittill("end_game");
     wait 12; // Give players 12 seconds to see the scoreboard
-    map_restart(false);
+    exitLevel(false);
 }
 
 
