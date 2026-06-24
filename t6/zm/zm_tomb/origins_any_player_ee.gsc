@@ -58,7 +58,13 @@ spawn_reward()
 
 prompt_and_visibility_func( player )
 {
-	if ( maps\mp\zombies\_zm_challenges::stat_reward_available( "zc_boxes_filled", player ) || isdefined( player.a_b_player_rewarded ) )
+	has_normal_reward = false;
+	if ( isdefined( player.characterindex ) && player.characterindex >= 0 && player.characterindex < 4 )
+	{
+		has_normal_reward = maps\mp\zombies\_zm_challenges::stat_reward_available( "zc_boxes_filled", player );
+	}
+
+	if ( has_normal_reward || isdefined( player.a_b_player_rewarded ) )
 	{
 		self sethintstring( "" );
 		return false;

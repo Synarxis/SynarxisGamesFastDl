@@ -104,6 +104,9 @@ init()
     // Prevent Origins from deleting door brushes after they open — hide instead of delete
     // so our Sprint+Melee close system can show() and moveto() them back
     replaceFunc( maps\mp\zm_tomb_utility::bunker_door_clean_up, ::custom_bunker_door_clean_up );
+    
+    // Reduce footprint box soul requirement to 20
+    level thread custom_soul_box_monitor();
 }
 
 custom_bunker_door_clean_up()
@@ -602,5 +605,40 @@ custom_player_slow_movement_speed_monitor()
             self setmovespeedscale( self.n_move_scale );
         }
         wait 0.1;
+    }
+}
+
+custom_soul_box_monitor()
+{
+    flag_wait( "initial_blackscreen_passed" );
+    
+    a_boxes = getentarray( "foot_box", "script_noteworthy" );
+    foreach ( box in a_boxes )
+    {
+        box thread custom_soul_override();
+    }
+}
+
+custom_soul_override()
+{
+    self endon( "box_finished" );
+    while ( true )
+    {
+        if ( isdefined( self.n_souls_absorbed ) && self.n_souls_absorbed >= 19 )
+        {
+            // Wait for the 20th soul to be absorbed natively
+            self waittill( "soul_absorbed", player );
+            wait 0.1; // Let the base script process the 20th soul
+            
+            // Now fast forward the remaining 10 souls instantly
+            while( self.n_souls_absorbed < 30 )
+            {
+                // Send a fake soul_absorbed notify so the base script finishes its loop
+                self notify( "soul_absorbed", player );
+                wait 0.05;
+            }
+            break;
+        }
+        wait 0.5;
     }
 }
