@@ -651,16 +651,18 @@ bank_setup()
     level thread bank_power_listener( shockbox );
 
     deposit_spot = spawnstruct();
-    deposit_spot.origin = ( 1651, 9240, 1336 );
+    deposit_spot.origin = ( 1651, 9240, 1336 + 32 );
     deposit_spot.angles = ( 0, 85, 0 );
     deposit_spot.script_length = 16;
     deposit_spot.targetname = "bank_deposit";
+    deposit_spot.script_unitrigger_type = "unitrigger_radius_use";
 
     withdraw_spot = spawnstruct();
-    withdraw_spot.origin = ( 1651, 9768, 1336 );
+    withdraw_spot.origin = ( 1651, 9768, 1336 + 32 );
     withdraw_spot.angles = ( 0, 87, 0 );
     withdraw_spot.script_length = 16;
     withdraw_spot.targetname = "bank_withdraw";
+    withdraw_spot.script_unitrigger_type = "unitrigger_radius_use";
 
     level.bank_deposit_stub = deposit_spot bank_deposit_unitrigger();
     level.bank_withdraw_stub = withdraw_spot bank_withdraw_unitrigger();
@@ -672,6 +674,7 @@ bank_power_listener( shockbox )
     {
         level waittill( "bank_power_on" );
         level.bank_power_active = true;
+        level notify( "bank_power_changed" );
 
         if ( isdefined( level.bank_deposit_stub ) )
             level.bank_deposit_stub maps\mp\zombies\_zm_unitrigger::run_visibility_function_for_all_triggers();
@@ -680,6 +683,7 @@ bank_power_listener( shockbox )
 
         level waittill( "end_of_round" );
         level.bank_power_active = false;
+        level notify( "bank_power_changed" );
         shockbox notify( "afterlife_interact_reset" );
 
         if ( isdefined( level.bank_deposit_stub ) )
@@ -796,12 +800,12 @@ custom_afterlife_player_damage_callback( einflictor, eattacker, idamage, idflags
 
 bank_deposit_unitrigger()
 {
-    return bank_unitrigger( "bank_deposit", ::trigger_deposit_update_prompt, ::trigger_deposit_think, 5, 5, undefined, 5 );
+    return bank_unitrigger( "bank_deposit", ::trigger_deposit_update_prompt, ::trigger_deposit_think, 32, 32, 64, 48 );
 }
 
 bank_withdraw_unitrigger()
 {
-    return bank_unitrigger( "bank_withdraw", ::trigger_withdraw_update_prompt, ::trigger_withdraw_think, 5, 5, undefined, 5 );
+    return bank_unitrigger( "bank_withdraw", ::trigger_withdraw_update_prompt, ::trigger_withdraw_think, 32, 32, 64, 48 );
 }
 
 bank_unitrigger( name, prompt_fn, think_fn, override_length, override_width, override_height, override_radius )
@@ -838,7 +842,10 @@ bank_unitrigger( name, prompt_fn, think_fn, override_length, override_width, ove
         unitrigger_stub.script_height = 64;
 
     if ( isdefined( override_radius ) )
+    {
         unitrigger_stub.script_radius = override_radius;
+        unitrigger_stub.radius = override_radius;
+    }
     else if ( isdefined( self.radius ) )
         unitrigger_stub.radius = self.radius;
     else

@@ -57,6 +57,8 @@ init()
     replaceFunc( maps\mp\zombies\_zm_score::player_add_points_kill_bonus, ::custom_player_add_points_kill_bonus );
     replaceFunc( maps\mp\zombies\_zm_weapons::ammo_give, ::new_ammo_give );
     replacefunc(maps\mp\zombies\_zm::round_over, ::new_round_over);
+    replaceFunc( maps\mp\zombies\_zm_blockers::debris_init, ::custom_debris_init );
+    replaceFunc( maps\mp\zombies\_zm_audio::create_and_play_dialog, ::custom_create_and_play_dialog );
     
     // Sharedbox: Initialize
     if(getdvar( "mapname" ) == "zm_tomb" )
@@ -72,22 +74,13 @@ init()
     level thread disable_map_staminup_logic_on_load();   
     level thread patch_wallbuys();
     level thread onsayPlayer();	 
-    level.custom_debris_function = ::override_debris_think;
     level thread monitor_doors();
     level.ragestarted = 0;
 	level thread watch_round_count();
+    level thread custom_survival_bank_setup();
     // Single player connect handler for everything
     level thread onPlayerConnect();
     level thread command_thread();
-    level thread seamless_restart_monitor();
-}
-
-seamless_restart_monitor()
-{
-    level endon("end_game_fast_restart");
-    level waittill("end_game");
-    wait 12; // Give players 12 seconds to see the scoreboard
-    exitLevel(false);
 }
 
 
@@ -106,6 +99,12 @@ onPlayerConnect()
         player.counter_running = false;
         player.downtimer_running = false;
         player.mule_monitor_running = false;
+        
+        player.account_value = player maps\mp\zombies\_zm_stats::get_map_stat( "depositBox", "zm_transit" );
+        if ( !isdefined( player.account_value ) )
+            player.account_value = 0;
+
+        player thread player_bank_hud_think();
 
          // Initialize AFK variables
         player.isafk = 0;
@@ -132,12 +131,23 @@ onPlayerSpawned()
     level endon("end_game");
     self endon("disconnect");
 
+    self thread monitor_base_health();
+
     for(;;)
     {
         self waittill("spawned_player");
+        flag_wait("initial_blackscreen_passed");
         wait 0.1;
-        self.maxhealth = 150;
-        self.health = self.maxhealth;
+        if (!self HasPerk("specialty_armorvest"))
+        {
+            self.maxhealth = 150;
+            self.health = self.maxhealth;
+        }
+        else
+        {
+            self.maxhealth = 250;
+            self.health = self.maxhealth;
+        }
         // === HUD THREADS (5 threads - can't easily combine) ===
         if(!self.timer_running)
             self thread timer();
@@ -248,7 +258,7 @@ health_bar_hud()
 	}
 	else if (level.script == "zm_tomb")
 	{
-		y -= 60;
+		y -= 28;
 	}
 
 	hud = self createbar((1, 1, 1), level.primaryprogressbarwidth - 10, level.primaryprogressbarheight);
@@ -345,7 +355,7 @@ shield_bar_hud()
 	}
 	else if (level.script == "zm_tomb")
 	{
-		y -= 60;
+		y -= 28;
 	}
 
 	hud = self createbar((0.5, 0.5, 0.5), level.primaryprogressbarwidth - 10, int(level.primaryprogressbarheight / 2));
@@ -921,25 +931,60 @@ onsayPlayer()
     {
         level waittill( "say", message, player );
         sayText = strtok(tolower(message), " ");        
-        if(sayText[0]==".send" || sayText[0]=="/.send") //GivePoints
+        if ( isdefined( sayText ) && sayText.size > 0 )
         {
-            if(sayText.size>1)
+            if(sayText[0]==".send" || sayText[0]=="/.send") //GivePoints
             {
-                for( i = 0; i < level.players.size; i++ )
+                if(sayText.size>1)
                 {
-                    if( isSubStr( tolower( getPlayerName( level.players[ i ] )), tolower(sayText[ 1 ] ) ))
+                    for( i = 0; i < level.players.size; i++ )
                     {
-                        value = int( sayText[ ( sayText.size - 1 ) ] );
-                        if( value < 0 )
-                            value = ( value * -1 );
-                        player give_points( level.players[ i ], int( value ));
-                    }                    
+                        if( isSubStr( tolower( getPlayerName( level.players[ i ] )), tolower(sayText[ 1 ] ) ))
+                        {
+                            value = int( sayText[ ( sayText.size - 1 ) ] );
+                            if( value < 0 )
+                                value = ( value * -1 );
+                            player give_points( level.players[ i ], int( value ));
+                        }                    
+                    }
+                }else
+                {
+                    player iPrintLn("Use ^2.send ^1name ^2amount");
                 }
-            }else
+            }       
+            else if ( sayText[0] == ".join" || sayText[0] == "/.join" )
             {
-                player iPrintLn("Use ^2.send ^1name ^2amount");
+                if ( player.sessionstate == "spectator" )
+                {
+                    if ( !isdefined( player.spectator_respawn ) )
+                    {
+                        spawnpoints = getstructarray( "initial_spawn_points", "targetname" );
+                        if ( isdefined( spawnpoints ) && spawnpoints.size > 0 )
+                        {
+                            player.spectator_respawn = spawnpoints[0];
+                        }
+                    }
+
+                    if ( isdefined( player.spectator_respawn ) )
+                    {
+                        player [[ level.spawnplayer ]]();
+                        
+                        foreach ( p in level.players )
+                        {
+                            p iPrintLn( "^2" + getPlayerName( player ) + " ^7has respawned using ^2.join" );
+                        }
+                    }
+                    else
+                    {
+                        player iPrintLn( "^1Error: No spawn point found." );
+                    }
+                }
+                else
+                {
+                    player iPrintLn( "^1You must be spectating to use this command." );
+                }
             }
-        }       
+        }
     }
 }
 
@@ -1402,7 +1447,7 @@ watch_use_press()
         }
         else
         {
-            player thread custom_error_print("^1Not enough points!");
+            player playlocalsound( "no_purchase" );
         }
     }
 }
@@ -1420,7 +1465,7 @@ watch_melee_pay()
         // Check if player is pressing the Melee button
         if(self meleebuttonpressed())
         {
-            trig = self get_touching_trigger();
+            trig = self get_touching_or_closest_trigger();
 
             // Only allow if it's a valid door, not already open, hasn't been half-bought yet (and not currently holding sprint or recently closed a door)
             if(isDefined(trig) && isDefined(trig.real_cost) && !trig.is_half_bought && !self sprintbuttonpressed() && ( !isDefined( trig._door_open ) || !trig._door_open ) && ( !isDefined( self.last_door_close_time ) || ( gettime() - self.last_door_close_time ) >= 1000 ))
@@ -1478,7 +1523,7 @@ watch_melee_pay()
                 }
                 else
                 {
-                    self thread custom_error_print("^1Not enough for half!^7");
+                    self playlocalsound( "no_purchase" );
                     while(self meleebuttonpressed()) wait 0.05;
                 }
             }
@@ -1798,12 +1843,95 @@ watch_shared_door_use_press( door )
 //  Debris Save / Open Detection / Close / Reopen
 // ============================================================
 
-// Called by the engine's debris_think() via level.custom_debris_function.
-// Suspends forever so the engine's purchase/deletion loop never executes.
-override_debris_think()
+// Replaces the engine's default debris_init to set up costs and flags
+// without starting the default debris_think thread loop.
+custom_debris_init()
 {
-    // Just wait forever — our watch_use_press handles all debris purchases
-    self waittill( "adv_doors_never" );
+    self.zombie_cost = 1000;
+
+    if ( isdefined( self.script_noteworthy ) )
+    {
+        cost = int( self.script_noteworthy );
+        if ( cost > 0 )
+            self.zombie_cost = cost;
+    }
+
+    if ( isdefined( self.script_flag ) && !isdefined( level.flag[self.script_flag] ) )
+        flag_init( self.script_flag );
+}
+
+// Detours create_and_play_dialog to suppress character deny quotes when they touch
+// a door or debris blocker that they actually have enough score to purchase.
+custom_create_and_play_dialog( category, type, response, force_variant, override )
+{
+    if ( isdefined( type ) && type == "door_deny" )
+    {
+        trig = self get_touching_or_closest_trigger();
+        if ( isdefined( trig ) )
+        {
+            cost = trig.real_cost;
+            if ( !isdefined( cost ) )
+                cost = trig.zombie_cost;
+            if ( isdefined( trig.original_cost ) )
+                cost = trig.original_cost;
+
+            if ( self.score >= cost )
+            {
+                return; // Suppress character complain dialog
+            }
+        }
+    }
+
+    waittime = 0.25;
+
+    if ( !isdefined( self.zmbvoxid ) )
+    {
+        return;
+    }
+
+    if ( isdefined( self.dontspeak ) && self.dontspeak )
+        return;
+
+    isresponse = 0;
+    alias_suffix = undefined;
+    index = undefined;
+    prefix = undefined;
+
+    if ( !isdefined( level.vox.speaker[self.zmbvoxid].alias[category][type] ) )
+        return;
+
+    prefix = level.vox.speaker[self.zmbvoxid].prefix;
+    alias_suffix = level.vox.speaker[self.zmbvoxid].alias[category][type];
+
+    if ( self is_player() )
+    {
+        if ( self.sessionstate != "playing" )
+            return;
+
+        if ( self maps\mp\zombies\_zm_laststand::player_is_in_laststand() && ( type != "revive_down" || type != "revive_up" ) )
+            return;
+
+        index = maps\mp\zombies\_zm_weapons::get_player_index( self );
+        prefix = prefix + index + "_";
+    }
+
+    if ( isdefined( response ) )
+    {
+        if ( isdefined( level.vox.speaker[self.zmbvoxid].response[category][type] ) )
+            alias_suffix = response + level.vox.speaker[self.zmbvoxid].response[category][type];
+
+        isresponse = 1;
+    }
+
+    sound_to_play = self zmbvoxgetlinevariant( prefix, alias_suffix, force_variant, override );
+
+    if ( isdefined( sound_to_play ) )
+    {
+        if ( isdefined( level._audio_custom_player_playvox ) )
+            self thread [[ level._audio_custom_player_playvox ]]( prefix, index, sound_to_play, waittime, category, type, override );
+        else
+            self thread maps\mp\zombies\_zm_audio::do_player_or_npc_playvox( prefix, index, sound_to_play, waittime, category, type, override, isresponse );
+    }
 }
 
 // Saves debris piece entities at init time BEFORE the engine can delete them
@@ -2095,7 +2223,7 @@ watch_debris_reopen()
         }
         else
         {
-            player thread custom_error_print( "^1Not enough points!" );
+            player playlocalsound( "no_purchase" );
         }
     }
 }
@@ -2431,6 +2559,41 @@ get_touching_trigger()
     return undefined;
 }
 
+get_touching_or_closest_trigger()
+{
+    trig = self get_touching_trigger();
+    if ( isdefined( trig ) )
+        return trig;
+
+    all_trigs = getentarray("zombie_door", "targetname");
+    debris = getentarray("zombie_debris", "targetname");
+
+    closest = undefined;
+    min_dist_sq = 65536; // 256 units squared (256 * 256)
+
+    foreach(trig in all_trigs)
+    {
+        dist_sq = distancesquared(self.origin, trig.origin);
+        if ( dist_sq < min_dist_sq )
+        {
+            min_dist_sq = dist_sq;
+            closest = trig;
+        }
+    }
+
+    foreach(trig in debris)
+    {
+        dist_sq = distancesquared(self.origin, trig.origin);
+        if ( dist_sq < min_dist_sq )
+        {
+            min_dist_sq = dist_sq;
+            closest = trig;
+        }
+    }
+
+    return closest;
+}
+
 
 // ============================================================================
 // MULE KICK - COMBINED MONITOR (was 3 threads, now 1!)
@@ -2657,6 +2820,36 @@ CheckForCurrentBox()
         wait 10;
     }
 
+    if ( getdvar( "mapname" ) == "zm_buried" )
+    {
+        wait 5;
+        if ( isdefined( level.maze_chests ) && level.maze_chests.size > 0 )
+        {
+            for ( i = 0; i < level.maze_chests.size; i++ )
+            {
+                found = false;
+                for ( j = 0; j < level.chests.size; j++ )
+                {
+                    if ( level.chests[j] == level.maze_chests[i] )
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if ( !found )
+                {
+                    level.chests[level.chests.size] = level.maze_chests[i];
+                }
+            }
+        }
+
+        trig = getent( "maze_box_trigger", "targetname" );
+        if ( isdefined( trig ) )
+        {
+            trig delete();
+        }
+    }
+
     // --- MERGED FROM "ALL MYSTERY BOX" SCRIPT ---
     level.chest_min_move_usage = 999999;
     level.chest_joker_probability = 0;
@@ -2712,7 +2905,7 @@ monitor_boxes()
     {
         for(i = 0; i < level.chests.size; i++)
         {
-            if(!level.chests[ i ].hidden)
+            if(!level.chests[ i ].hidden && isdefined(level.chests[ i ].zbarrier))
             {
                 level.chests[ i ].unitrigger_stub.prompt_and_visibility_func = ::boxtrigger_update_prompt;
                 level.chests[ i ].zbarrier waittill( "left" );
@@ -2783,7 +2976,10 @@ get_chest_pieces()
 
     unitrigger_force_per_player_triggers( self.unitrigger_stub, 1 );
     self.unitrigger_stub.prompt_and_visibility_func = ::boxtrigger_update_prompt;
-    self.zbarrier.owner = self;
+    if ( isDefined( self.zbarrier ) )
+    {
+        self.zbarrier.owner = self;
+    }
 }
 
 boxtrigger_update_prompt( player )
@@ -2856,6 +3052,10 @@ custom_boxstub_update_prompt( player )
 
 custom_treasure_chest_think()
 {
+    if ( !isdefined( self.zbarrier ) )
+    {
+        return;
+    }
     self endon( "kill_chest_think" );
     
     while(1)
@@ -3418,6 +3618,35 @@ start_round_five_chaos()
 	level thread force_zombie_sprint();
 }
 
+is_special_zombie(zombie)
+{
+	if (isDefined(zombie.is_mechz) && zombie.is_mechz)
+	{
+		return true;
+	}
+	if (isDefined(zombie.is_brutus) && zombie.is_brutus)
+	{
+		return true;
+	}
+	if (isDefined(zombie.is_ghost) && zombie.is_ghost)
+	{
+		return true;
+	}
+	if (isDefined(zombie.isscreecher) && zombie.isscreecher)
+	{
+		return true;
+	}
+	if (isDefined(zombie.is_avogadro) && zombie.is_avogadro)
+	{
+		return true;
+	}
+	if (isDefined(zombie.animname) && (zombie.animname == "zombie_dog" || zombie.animname == "leaper_zombie"))
+	{
+		return true;
+	}
+	return false;
+}
+
 force_zombie_sprint()
 {
 	level endon("end_game");
@@ -3430,9 +3659,12 @@ force_zombie_sprint()
             {
                 if(isDefined(zombie) && isAlive(zombie))
                 {
-                    if(zombie.zombie_move_speed != "sprint")
+                    if (!is_special_zombie(zombie))
                     {
-                        zombie maps\mp\zombies\_zm_utility::set_zombie_run_cycle("sprint");
+                        if(zombie.zombie_move_speed != "sprint")
+                        {
+                            zombie maps\mp\zombies\_zm_utility::set_zombie_run_cycle("sprint");
+                        }
                     }
                 }
             }
@@ -3556,7 +3788,7 @@ notify_zone_transition(zone_display_name)
     }
     else if (level.script == "zm_tomb")
     {
-        y -= 60;
+        y -= 28;
     }
     
     // Create new HUD element
@@ -3634,48 +3866,311 @@ get_zone_name()
     return "";
 }
 
-custom_error_print( msg )
+monitor_base_health()
 {
     self endon("disconnect");
-    self notify("custom_error_print");
-    self endon("custom_error_print");
-
-    if ( !IsDefined( self.custom_error_hud ) )
+    level endon("end_game");
+    
+    for(;;)
     {
-        self.custom_error_hud = newClientHudElem(self);
-        self.custom_error_hud.alignx = "left";
-        self.custom_error_hud.aligny = "middle";
-        self.custom_error_hud.horzalign = "user_left";
-        self.custom_error_hud.vertalign = "user_bottom";
+        if (self maps\mp\zombies\_zm_laststand::player_is_in_laststand() || !isAlive(self))
+        {
+            wait 0.5;
+            continue;
+        }
+
+        if (!self HasPerk("specialty_armorvest"))
+        {
+            if (self.maxhealth != 150)
+            {
+                self.maxhealth = 150;
+                if (self.health > 150)
+                {
+                    self.health = 150;
+                }
+            }
+        }
+        else
+        {
+            if (self.maxhealth != 250)
+            {
+                self.maxhealth = 250;
+                if (self.health > 250)
+                {
+                    self.health = 250;
+                }
+            }
+        }
+        wait 0.5;
+    }
+}
+
+custom_survival_bank_setup()
+{
+    level.bank_teller_positions = [];
+    level.custom_bank_origins = [];
+
+    map = getdvar("mapname");
+    location = getdvar("ui_zm_mapstartlocation");
+    
+    is_survival_map = false;
+    spawn_origin = undefined;
+    spawn_angles = (0, 0, 0);
+    
+    if (map == "zm_nuked")
+    {
+        is_survival_map = true;
+        spawn_origin = (666, 737, -57);
+        spawn_angles = (0, -48, 0);
+    }
+    else if (map == "zm_transit")
+    {
+        if (location == "farm")
+        {
+            is_survival_map = true;
+            spawn_origin = (7099, -5769, -48);
+            spawn_angles = (0, -144, 0);
+        }
+        else if (location == "transit" && getdvar("g_gametype") == "zstandard")
+        {
+            is_survival_map = true;
+            spawn_origin = (-5932, 4627, -54);
+            spawn_angles = (0, 154, 0);
+        }
+        else if (location == "town")
+        {
+            is_survival_map = true;
+            spawn_origin = (575, 455, -40);
+            spawn_angles = (0, -22, 0);
+        }
+    }
+    
+    if (is_survival_map && isdefined(spawn_origin))
+    {
+        level thread spawn_custom_deposit_teller(spawn_origin, spawn_angles);
+    }
+    
+    level thread cache_native_bank_teller_positions();
+}
+
+spawn_custom_deposit_teller(origin, angles)
+{
+    flag_wait( "initial_blackscreen_passed" );
+    setup_bank_level_vars();
+
+    trigger_origin = origin + anglestoforward( angles ) * 25 + ( 0, 0, 20 );
+
+    level.custom_bank_origins[ level.custom_bank_origins.size ] = origin;
+    level.bank_teller_positions[ level.bank_teller_positions.size ] = trigger_origin;
+
+    // Only spawn z_money model if we are NOT on Town survival
+    location = getdvar("ui_zm_mapstartlocation");
+    if ( location != "town" )
+    {
+        // Spawn the z_money model
+        orb_ent = spawn( "script_model", origin + ( 0, 0, 45 ) );
+        orb_ent.angles = angles;
+        orb_ent setmodel( "zombie_z_money_icon" );
+        orb_ent notsolid();
         
-        // Sit below health bar (-104) and above default iprintln
-        y = -80; 
-        if ( level.script == "zm_buried" )
-            y -= 25;
-        else if ( level.script == "zm_tomb" )
-            y -= 35; // Put it at -115. The Origins health bar is at -164, and Action Slots are at the bottom.
-            
-        self.custom_error_hud.x = 5;
-        self.custom_error_hud.y = y;
-        
-        if (self issplitscreen())
-            self.custom_error_hud.y += 60;
-            
-        self.custom_error_hud.foreground = 1;
-        self.custom_error_hud.font = "default";
-        self.custom_error_hud.fontscale = 1.3;
-        self.custom_error_hud.alpha = 0;
-        self.custom_error_hud.hidewheninmenu = 1;
+        // Play powerup glow FX directly on the model entity
+        playfxontag( level._effect["powerup_on"], orb_ent, "tag_origin" );
+
+        // Start rotation loop
+        orb_ent thread bank_money_rotate_loop();
     }
 
-    self.custom_error_hud.alpha = 1;
-    self.custom_error_hud settext( msg );
-
-    wait 2;
-
-    if ( IsDefined( self.custom_error_hud ) )
-        self.custom_error_hud fadeovertime( 0.5 );
-        
-    if ( IsDefined( self.custom_error_hud ) )
-        self.custom_error_hud.alpha = 0;
+    // Spawn the deposit unitrigger stub
+    unitrigger_stub = spawnstruct();
+    unitrigger_stub.origin = trigger_origin;
+    unitrigger_stub.angles = angles;
+    unitrigger_stub.script_angles = unitrigger_stub.angles;
+    unitrigger_stub.radius = 80;
+    unitrigger_stub.script_height = 96;
+    unitrigger_stub.script_unitrigger_type = "unitrigger_radius_use";
+    unitrigger_stub.cursor_hint = "HINT_NOICON";
+    unitrigger_stub.targetname = "bank_deposit";
+    
+    maps\mp\zombies\_zm_unitrigger::unitrigger_force_per_player_triggers( unitrigger_stub, 1 );
+    unitrigger_stub.prompt_and_visibility_func = ::custom_deposit_prompt;
+    maps\mp\zombies\_zm_unitrigger::register_unitrigger( unitrigger_stub, ::custom_deposit_think );
 }
+
+cache_native_bank_teller_positions()
+{
+    flag_wait( "initial_blackscreen_passed" );
+    
+    // Add native bank deposit structs if not already added
+    native_deposits = getstructarray( "bank_deposit", "targetname" );
+    foreach ( struct in native_deposits )
+    {
+        if ( isdefined( struct.origin ) )
+        {
+            already_added = false;
+            foreach ( pos in level.bank_teller_positions )
+            {
+                if ( distance( pos, struct.origin ) < 5 )
+                {
+                    already_added = true;
+                    break;
+                }
+            }
+            if ( !already_added )
+                level.bank_teller_positions[ level.bank_teller_positions.size ] = struct.origin;
+        }
+    }
+    
+    // Add native bank withdraw structs if not already added
+    native_withdraws = getstructarray( "bank_withdraw", "targetname" );
+    foreach ( struct in native_withdraws )
+    {
+        if ( isdefined( struct.origin ) )
+        {
+            already_added = false;
+            foreach ( pos in level.bank_teller_positions )
+            {
+                if ( distance( pos, struct.origin ) < 5 )
+                {
+                    already_added = true;
+                    break;
+                }
+            }
+            if ( !already_added )
+                level.bank_teller_positions[ level.bank_teller_positions.size ] = struct.origin;
+        }
+    }
+}
+
+bank_money_rotate_loop()
+{
+    self endon( "death" );
+    while ( isdefined( self ) )
+    {
+        self rotateyaw( 360, 4.0 );
+        wait 4.0;
+    }
+}
+
+custom_deposit_prompt( player )
+{
+    if ( !isdefined( player.account_value ) )
+    {
+        player.account_value = player maps\mp\zombies\_zm_stats::get_map_stat( "depositBox", "zm_transit" );
+        if ( !isdefined( player.account_value ) )
+            player.account_value = 0;
+    }
+
+    if ( player.account_value >= level.bank_account_max )
+    {
+        self sethintstring( "Bank Account Full" );
+        return true;
+    }
+
+    self sethintstring( "Hold ^3[{+activate}]^7 to deposit $1000" );
+    return true;
+}
+
+custom_deposit_think()
+{
+    self endon( "kill_trigger" );
+
+    while ( true )
+    {
+        self waittill( "trigger", player );
+
+        if ( !is_player_valid( player ) )
+            continue;
+
+        if ( !isdefined( player.account_value ) )
+        {
+            player.account_value = player maps\mp\zombies\_zm_stats::get_map_stat( "depositBox", "zm_transit" );
+            if ( !isdefined( player.account_value ) )
+                player.account_value = 0;
+        }
+
+        if ( player.score >= level.bank_deposit_ddl_increment_amount && player.account_value < level.bank_account_max )
+        {
+            player playsoundtoplayer( "zmb_vault_bank_deposit", player );
+            player.score = player.score - level.bank_deposit_ddl_increment_amount;
+            player.account_value = player.account_value + level.bank_account_increment;
+            player maps\mp\zombies\_zm_stats::set_map_stat( "depositBox", player.account_value, level.banking_map );
+
+            if ( isdefined( level.custom_bank_deposit_vo ) )
+                player thread [[ level.custom_bank_deposit_vo ]]();
+
+            if ( player.account_value >= level.bank_account_max )
+                self sethintstring( "" );
+        }
+    }
+}
+
+setup_bank_level_vars()
+{
+    if (!isdefined(level.bank_deposit_max_amount))
+        level.bank_deposit_max_amount = 250000;
+    if (!isdefined(level.bank_deposit_ddl_increment_amount))
+        level.bank_deposit_ddl_increment_amount = 1000;
+    if (!isdefined(level.bank_account_max))
+        level.bank_account_max = level.bank_deposit_max_amount / 100;
+    if (!isdefined(level.bank_account_increment))
+        level.bank_account_increment = int( level.bank_deposit_ddl_increment_amount / 100 );
+    if (!isdefined(level.banking_map))
+        level.banking_map = "zm_transit";
+}
+
+player_bank_hud_think()
+{
+    self endon( "disconnect" );
+    
+    map = getdvar( "mapname" );
+    if ( map != "zm_nuked" && map != "zm_transit" && map != "zm_highrise" && map != "zm_buried" )
+        return;
+
+    hud = newClientHudElem( self );
+    hud.alignx = "center";
+    hud.aligny = "middle";
+    hud.horzalign = "center";
+    hud.vertalign = "bottom";
+    hud.y = -100;
+    hud.foreground = 1;
+    hud.hidewheninmenu = 1;
+    hud.font = "default";
+    hud.fontscale = 1.3;
+    hud.alpha = 0;
+    hud.color = ( 1, 1, 1 );
+    hud.label = &"Account Balance: $";
+
+    while ( true )
+    {
+        near_teller = false;
+        player_origin = self.origin;
+        
+        if ( isdefined( level.bank_teller_positions ) )
+        {
+            foreach ( pos in level.bank_teller_positions )
+            {
+                if ( distance( player_origin, pos ) < 80 )
+                {
+                    near_teller = true;
+                    break;
+                }
+            }
+        }
+        
+        if ( isalive( self ) && self.sessionstate == "playing" && near_teller )
+        {
+            hud.alpha = 1;
+            val = 0;
+            if ( isdefined( self.account_value ) )
+                val = self.account_value * 100;
+            hud setValue( val );
+        }
+        else
+        {
+            hud.alpha = 0;
+        }
+        
+        wait 0.1;
+    }
+}
+
