@@ -3939,9 +3939,7 @@ custom_survival_bank_setup()
         }
         else if (location == "town")
         {
-            is_survival_map = true;
-            spawn_origin = (575, 455, -40);
-            spawn_angles = (0, -22, 0);
+            level thread custom_bank_deposit_box();
         }
     }
     
@@ -4116,6 +4114,10 @@ setup_bank_level_vars()
         level.bank_account_increment = int( level.bank_deposit_ddl_increment_amount / 100 );
     if (!isdefined(level.banking_map))
         level.banking_map = "zm_transit";
+    if (!isdefined(level.ta_vaultfee))
+        level.ta_vaultfee = 100;
+    if (!isdefined(level.ta_tellerfee))
+        level.ta_tellerfee = 100;
 }
 
 player_bank_hud_think()
